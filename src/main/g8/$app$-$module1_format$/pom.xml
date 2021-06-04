@@ -18,11 +18,6 @@
       <artifactId>$app$-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>$package$</groupId>
-      <artifactId>$app$-config</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>pe.talma.commons</groupId>
       <artifactId>commons-rest-cloud</artifactId>
     </dependency>

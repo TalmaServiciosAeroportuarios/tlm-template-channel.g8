@@ -17,11 +17,6 @@
       <groupId>$package$</groupId>
       <artifactId>$app$-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>$package$</groupId>
-      <artifactId>$app$-config</artifactId>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
 </project>

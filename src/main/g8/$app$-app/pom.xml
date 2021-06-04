@@ -20,10 +20,6 @@
 
     <dependency>
       <groupId>$package$</groupId>
-      <artifactId>$app$-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>$package$</groupId>
       <artifactId>$app$-core</artifactId>
     </dependency>
     <dependency>

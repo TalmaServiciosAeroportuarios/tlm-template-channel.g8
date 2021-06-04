@@ -22,6 +22,30 @@ mvn spring-boot:run -Dspring-boot.run.jvmArguments="-XshowSettings:vm \
 $endif$
 
 ```
+Para realizar la coneccion al configserver se debe crear un archivo: bootstrap.yml
+y agregar la siguiente configuración:
+
+```
+server:
+  port: ${PORT}
+spring:
+  application:
+    name: ${APP-NAME}
+  profiles:
+    active: ${PROFILE}
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    consul:
+      config:
+        enabled: false
+    config:
+      uri: ${CONFIG_SERVER_URI}
+      fail-fast: ${CONFIG_SERVER_FAIL_FAST}
+      enabled: ${CONFIG_SERVER_ENABLED}
+      label: ${LABEL:master}
+
+```
 
 Variables para la conexión con el config-server (revisar archivo bootstrap en modulo ".app")
 ```
@@ -44,9 +68,7 @@ $app;format="upper"$
  │
  ├── $app$-app
  │   Contiene el SpringApplication que es el inicializa el spring-boot y 
- │   tiene como dependencia a todos los demas otros modulos, ademas posee
- │   un archivo "bootstrap" que tiene la configuración para realizar la
- │   conexión al config-server donde estan alojados todos los properties.
+ │   tiene como dependencia a todos los demas otros modulos.
  │
  ├── $app$-core
  │   Contiene el codigo comun entre los proyectos.

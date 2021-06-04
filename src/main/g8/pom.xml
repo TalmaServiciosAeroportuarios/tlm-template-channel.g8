@@ -14,7 +14,6 @@
   <version>$version$</version>
   <packaging>pom</packaging>
   <modules>
-    <module>$app$-config</module>
     <module>$app$-core</module>
     <module>$app$-$module1_format$</module>
     <module>$app$-$module2_format$</module>
@@ -28,11 +27,6 @@
 
 <dependencyManagement>
 <dependencies>
-  <dependency>
-    <groupId>$package$</groupId>
-    <artifactId>$app$-config</artifactId>
-    <version>\${$application;format="norm"$.version}</version>
-  </dependency>
   <dependency>
     <groupId>$package$</groupId>
     <artifactId>$app$-core</artifactId>
@@ -158,6 +152,45 @@ $if(spring_data_jpa_sqlserver_enable.truthy)$
 </dependency>
 <!-- spring data jpa sql server -->
 $endif$
+
+<!-- Denpendencies for config server-->
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+  <version>2.3.3.RELEASE</version>
+  <exclusions>
+    <exclusion>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-test</artifactId>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
 
 </dependencies>
 
