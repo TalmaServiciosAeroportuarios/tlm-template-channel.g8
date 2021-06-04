@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>$package$</groupId>
+    <artifactId>$app$</artifactId>
+    <version>$version$</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>$app$-app</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>pe.talma.commons</groupId>
+      <artifactId>commons-swagger</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>$package$</groupId>
+      <artifactId>$app$-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>$package$</groupId>
+      <artifactId>$app$-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>$package$</groupId>
+      <artifactId>$app$-$module1_format$</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>$package$</groupId>
+      <artifactId>$app$-$module2_format$</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>$package$</groupId>
+      <artifactId>$app$-$module3_format$</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+            <skip>false</skip>
+        </configuration>
+      </plugin>
+
+      $if(distributedtrace_enable.truthy)$
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>co.elastic.apm</groupId>
+                  <artifactId>elastic-apm-agent</artifactId>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>\${project.build.directory}/</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      $endif$
+    </plugins>
+  </build>
+
+</project>
+
+

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+		<groupId>pe.talma.commons</groupId>
+		<artifactId>commons-pomparent</artifactId>
+		<version>3.0.0-5-SNAPSHOT</version>
+		<relativePath/>
+  </parent>
+  <groupId>$package$</groupId>
+  <artifactId>$app$</artifactId>
+  <version>$version$</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>$app$-config</module>
+    <module>$app$-core</module>
+    <module>$app$-$module1_format$</module>
+    <module>$app$-$module2_format$</module>
+    <module>$app$-$module3_format$</module>
+    <module>$app$-app</module>
+  </modules>
+  <properties>
+    <$application;format="norm"$.version>$version$
+  </$application;format="norm"$.version>
+</properties>
+
+<dependencyManagement>
+<dependencies>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-config</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-core</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-$module1_format$</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-$module2_format$</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-$module3_format$</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>$package$</groupId>
+    <artifactId>$app$-app</artifactId>
+    <version>\${$application;format="norm"$.version}</version>
+  </dependency>
+
+  <dependency>
+    <groupId>com.neovisionaries</groupId>
+    <artifactId>nv-i18n</artifactId>
+    <version>1.23</version>
+  </dependency>
+  <dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.6</version>
+  </dependency>
+</dependencies>
+</dependencyManagement>
+
+
+<dependencies>
+
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-exception</artifactId>
+</dependency>
+
+
+$if(distributedtrace_enable.truthy)$
+<!-- talma commons trazabilidad distribuida (traceid) -->
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-distributedtrace</artifactId>
+</dependency>
+<!-- talma commons trazabilidad distribuida (traceid) -->
+$endif$
+
+$if(technicaltrace_enable.truthy)$
+<!-- talma commons trazabilidad tecnica (logs) -->
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-technicaltrace</artifactId>
+</dependency>
+<!-- talma commons trazabilidad tecnica (logs) -->
+$endif$
+
+$if(pubsub_enable.truthy)$
+<!-- talma commons pub sub -->
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-pubsub</artifactId>
+</dependency>
+<!-- talma commons pub sub -->
+$endif$
+
+$if(audit_enable.truthy)$
+<!-- talma commons auditoria -->
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-auditclient</artifactId>
+</dependency>
+<!-- talma commons auditoria -->
+$endif$
+
+$if(spring_configclient_enable.truthy)$
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+$endif$
+
+$if(cipher_enable.truthy)$
+<!-- talma commons cifrado -->
+<dependency>
+  <groupId>pe.talma.commons</groupId>
+  <artifactId>commons-cipher</artifactId>
+</dependency>
+<!-- talma commons cifrado -->
+$endif$
+
+
+$if(spring_data_jpa_sqlserver_enable.truthy)$
+<!-- spring data jpa sql server -->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.zaxxer</groupId>
+  <artifactId>HikariCP</artifactId>
+  <version>3.3.1</version>
+</dependency>
+<dependency>
+  <groupId>com.microsoft.sqlserver</groupId>
+  <artifactId>mssql-jdbc</artifactId>
+  <version>7.2.2.jre11</version>
+</dependency>
+<dependency>
+  <groupId>com.h2database</groupId>
+  <artifactId>h2</artifactId>
+  <version>1.4.200</version>
+  <!--<scope>test</scope>-->
+</dependency>
+<!-- spring data jpa sql server -->
+$endif$
+
+</dependencies>
+
+<build>
+<plugins>
+  <plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+      <skip>true</skip>
+    </configuration>
+  </plugin>
+</plugins>
+</build>
+
+
+<scm>
+<url>git://127.0.0.1/dummy</url>
+<connection>scm:git:git://127.0.0.1/dummy</connection>
+<developerConnection>scm:git:git://127.0.0.1/dummy</developerConnection>
+<tag>HEAD</tag>
+</scm>
+
+<repositories>
+<repository>
+  <id>central</id>
+  <name>Central Repository</name>
+  <url>https://repo.maven.apache.org/maven2</url>
+  <layout>default</layout>
+  <snapshots>
+    <enabled>false</enabled>
+  </snapshots>
+</repository>
+<repository>
+  <id>crew_integracion_ayni</id>
+  <name>artifactory-new-gd3my9j0-68c69656c7-gfvk8-releases</name>
+  <url>http://40.70.79.82:8080/artifactory/libs-release</url>
+</repository>
+</repositories>
+  </project>

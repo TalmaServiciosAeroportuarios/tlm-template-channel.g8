@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $app$
+  labels:
+    app: $app$
+spec:
+  replicas: \$BITBUCKET_VARIABLE_DEPLOYMENT_REPLICAS
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: $app$
+  template:
+    metadata:
+      labels:
+        app: $app$
+    spec:
+      containers:
+      - image: \$PIPELINE_DOCKER_TAG
+        name: $app$
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+          - name: LABEL
+            value: \$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+          - name: PROFILE
+            value: \$BITBUCKET_DEPLOYMENT_ENVIRONMENT
+          - name: LOGSTASH_URL
+            value: \$BITBUCKET_VARIABLE_LOGSTASH_URL
+          - name: APM_SERVER_URL
+            value: \$BITBUCKET_VARIABLE_APM_SERVER_URL
+          - name:  ANOTHER_OPTIONS
+            value: ""
+      hostAliases:
+        - ip: 172.18.100.23
+          hostnames:
+            - goe-log.uat.talma.per
+        - ip: 172.18.100.132
+          hostnames:
+            - goe-apm.uat.talma.per
+        - ip: 172.18.25.105
+          hostnames:
+            - goe-log.prd.talma.per
+        - ip: 172.18.25.104
+          hostnames:
+            - goe-apm.prd.talma.per
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: $app$
+  labels:
+    app: $app$
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: ""
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: $app$
+  type: LoadBalancer
+
+
+#---
+#apiVersion: autoscaling/v1
+#kind: HorizontalPodAutoscaler
+#metadata:
+#  name: microgenerator-hpa
+#spec:
+#  scaleTargetRef:
+#    kind: Deployment
+#    name: microgenerator
+#  minReplicas: 2
+#  maxReplicas: 4
+#  targetCPUUtilizationPercentage: 20

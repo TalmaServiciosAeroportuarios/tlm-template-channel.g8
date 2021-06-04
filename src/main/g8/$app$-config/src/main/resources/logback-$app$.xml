@@ -1,0 +1,61 @@
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+  <springProperty scope="context" name="appname" source="spring.application.name"/>
+  <springProperty scope="context" name="profile" source="spring.profiles.active"/>
+  <springProperty scope="context" name="loggingElasticHosts" source="logging.logstash.hosts" />
+  <springProperty scope="context" name="loggingElasticPort"  source="logging.logstash.port" />
+
+  <property name="CONSOLE_LOG_PATTERN_TRACING"
+            value="%clr(%d{\${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(\${LOG_LEVEL_PATTERN:-%5p}) %clr([%X{trace.id}:%X{span.id}]) %clr(\${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n\${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+
+  $if(technicaltrace_enable.truthy)$
+  <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <writeBufferSize>40960</writeBufferSize><!--default: 8192 (x4) -->
+    <destination>\${loggingElasticHosts}:\${loggingElasticPort}</destination>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <customFields>{"appname":"\${appname}", "profile":"\${profile}"}</customFields>
+    </encoder>
+  </appender>
+  $endif$
+
+  $if(technicaltrace_enable.truthy)$
+  <appender name="console-logstash" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <customFields>{"appname":"\${appname}", "profile":"\${profile}"}</customFields>
+    </encoder>
+  </appender>
+  $endif$
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>\${CONSOLE_LOG_PATTERN_TRACING}</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="consoleOnlyErrors" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <encoder>
+      <pattern>\${CONSOLE_LOG_PATTERN_TRACING}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- El level del log puede configurarse en el application.properties (logging.level.root = INFO, etc),
+       el level definido en el applicacion prima sobre el del level puesto en el loogback.xml -->
+  <root level="INFO">
+    <appender-ref ref="consoleOnlyErrors"/>
+    $if(technicaltrace_enable.truthy)$
+    <appender-ref ref="logstash"/>
+    <!-- <appender-ref ref="console-logstash"/> -->
+    $endif$
+    <!-- <appender-ref ref="console"/> -->
+  </root>
+  <logger name="$package$.$application;format="Camel"$Application" level="DEBUG" additivity="false">
+    <appender-ref ref="console"/>
+  </logger>
+
+</configuration>
