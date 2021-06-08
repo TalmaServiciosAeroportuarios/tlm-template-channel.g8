@@ -3,35 +3,34 @@
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"
   xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <servers>
-    <server>
-      <id>crew_integracion</id>
-      <username>\${env.ARTIFACT_USER}</username>
-      <password>\${env.ARTIFACT_PASSWORD}</password>
-    </server>
+    <activeProfiles>
+      <activeProfile>github</activeProfile>
+    </activeProfiles>
 
-  </servers>
+    <profiles>
+      <profile>
+        <id>github</id>
+        <repositories>
+          <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+          </repository>
+          <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/TalmaServiciosAeroportuarios/*</url>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
+          </repository>
+        </repositories>
+      </profile>
+    </profiles>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <name>Central Repository</name>
-          <url>https://repo.maven.apache.org/maven2</url>
-          <layout>default</layout>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>crew_integracion</id>
-          <name>aolshared1-releases</name>
-          <url>https://artifactorytlm.jfrog.io/artifactorytlm/archintegracion-mvn-release-local</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-
+    <servers>
+      <server>
+        <id>github</id>
+        <username>${env.GITHUB_USERNAME}</username>
+        <password>${env.GITHUB_PASSWORD}</password>
+      </server>
+    </servers>
 </settings>

@@ -1,0 +1,88 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Pipeline CI/CD
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push event
+  push:
+    branches:
+      - develop
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:
+      CONFIG_SERVER_URI: http://auth-capacity-lb-641361188.us-east-1.elb.amazonaws.com:8888/
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: JDK 11 setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # compiled code, test and package it in its distributable format
+      - name: compile code, test and package it in its distributable format
+        env:
+          GITHUB_USENAME: ${{github.actor}}
+          GITHUB_PASSWORD: ${{secrets.GH_PACKAGE_REPO_PASSWORD}}
+        run: mvn -B -Pgithub clean package --settings devops/settings.xml
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CONFIG_SERVER_URI: http://auth-capacity-lb-641361188.us-east-1.elb.amazonaws.com:8888/
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: JDK 11 setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run the tests
+        env:
+          GITHUB_USENAME: ${{github.actor}}
+          GITHUB_PASSWORD: ${{secrets.GH_PACKAGE_REPO_PASSWORD}}
+        run: mvn -B -Dmaven.test.skip=true clean package -Pgithub --settings devops/settings.xml
+
+      - name: see folders
+        run: ls -lRt *
+
+      - name: Get the version
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      - name: Build the docker image
+        run: docker build -f devops/Dockerfile --build-arg CONFIG_SERVER_URI=${{env.CONFIG_SERVER_URI}} -t $app$ .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.DEV_AWS_SECRET_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.DEV_AWS_ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: ${{ steps.get_version.outputs.version }}
+        run: |
+          docker tag $app$:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
