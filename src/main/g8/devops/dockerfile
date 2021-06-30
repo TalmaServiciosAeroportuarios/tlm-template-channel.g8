@@ -1,14 +1,14 @@
-FROM openjdk:11-jre-slim
+#FROM openjdk:11-jre-slim
 
-ARG P_CONFIG_SERVER_URI
-ARG P_PROFILE
-ARG P_PORT
+#ARG P_CONFIG_SERVER_URI
+#ARG P_PROFILE
+#ARG P_PORT
 
-ENV CONFIG_SERVER_URI=${P_CONFIG_SERVER_URI}
-ENV PROFILE=${P_PROFILE}
-ENV PORT=${P_PORT}
+#ENV CONFIG_SERVER_URI=${P_CONFIG_SERVER_URI}
+#ENV PROFILE=${P_PROFILE}
+#ENV PORT=${P_PORT}
 
-WORKDIR /opt
-ADD **-app/target/*.jar /opt/
+#WORKDIR /opt
+#ADD **-app/target/*.jar /opt/
 
-CMD exec java -Duser.timezone=America/Lima -XX:+PrintFlagsFinal -jar *-app-*.jar
+#CMD exec java -Duser.timezone=America/Lima -XX:+PrintFlagsFinal -jar *-app-*.jar
